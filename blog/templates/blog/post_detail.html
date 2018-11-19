@@ -18,7 +18,7 @@
                   <button type="button" class="btn btn-default">Edit</button>
                 </a>
               </div>
-            {% endif %}  
+            {% endif %}
           {% endif %}
 
           <h2>{{ post.title }}</h2>
@@ -30,4 +30,20 @@
           </div>
       </div>
 
+      <hr>
+      {% if user.is_authenticated %}
+         <p><a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Add Comment</a></p>
+      {% endif %}
+      {% for comment in post.comments.all %}
+        <div class="comment">
+          <div class="date">{{ comment.created_date }}</div>
+          <strong>{{ comment.author }}</strong>
+          <p>{{ comment.text | linebreaks }}</p>
+          {% if request.user == comment.author %}
+            <a class="btn btn-default" href="{% url 'comment_remove' pk=comment.pk %}">Delete</a>
+          {% endif %}
+        </div>
+      {% empty %}
+        <p>No comments yet</p>
+      {% endfor %}
 {% endblock %}
