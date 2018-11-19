@@ -1,0 +1,33 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+
+      <div class="post">
+          {% if post.created_date %}
+          <div class="date">
+              <p>published: {{ post.created_date }}</p>
+          </div>
+          {% endif %}
+          {% if user.is_authenticated %}
+            {% if request.user == post.author %}
+              <div class="btn-group" >
+                <a href="{% url 'post_remove' pk=post.pk %}" class="top-menu">
+                  <button type="button" class="btn btn-default">Delete</button>
+                </a>
+
+                <a href="{% url 'post_edit' pk=post.pk %}" class="top-menu">
+                  <button type="button" class="btn btn-default">Edit</button>
+                </a>
+              </div>
+            {% endif %}  
+          {% endif %}
+
+          <h2>{{ post.title }}</h2>
+          <div class = "author">
+            <p>author : {{ post.author| linebreaksbr }}</p>
+          </div>
+          <div class="content">
+            <p>{{ post.text|linebreaksbr }}</p>
+          </div>
+      </div>
+
+{% endblock %}
