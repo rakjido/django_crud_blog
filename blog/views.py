@@ -1,13 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
 
 def post_list(request):
-    posts = Post.objects.order_by('published_date')
+    object_list = Post.objects.order_by('-created_date')
+    paginator = Paginator(object_list, 3)
+    print("page count: ", paginator.count)
+    print("page number : ", paginator.num_pages)
+    page = request.GET.get('page', 1)
+    print(request.GET.get('page', 1))
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
     return render(request, 'blog/post_list.html', {'posts': posts})
 
 

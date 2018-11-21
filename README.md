@@ -1,5 +1,8 @@
 # django crud blog
 
+## v0.3
+* pagination 추가
+
 ## v0.2
 * 댓글기능 추가
 
