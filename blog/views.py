@@ -8,12 +8,9 @@ from .forms import PostForm, CommentForm
 
 
 def post_list(request):
-    object_list = Post.objects.order_by('-created_date')
-    paginator = Paginator(object_list, 3)
-    print("page count: ", paginator.count)
-    print("page number : ", paginator.num_pages)
+    object_list = Post.objects.order_by('-id')
+    paginator = Paginator(object_list, 5)
     page = request.GET.get('page', 1)
-    print(request.GET.get('page', 1))
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
