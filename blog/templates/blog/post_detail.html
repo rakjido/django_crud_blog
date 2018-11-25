@@ -29,12 +29,18 @@
             <p>{{ post.text|linebreaksbr }}</p>
           </div>
       </div>
-
+      {% for attached in post.attachment_set.all %}
+        <div><a href="{{ attached.upfiles.url }}">{{ attached.upfiles.name|slice:"16:" }}</a></div>
+      {% empty %}
+      {% endfor %}
       <hr>
       {% if user.is_authenticated %}
          <p><a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Add Comment</a></p>
       {% endif %}
-      {% for comment in post.comments.all %}
+
+      {% for comment in post.comment_set.all %}
+
+
         <div class="comment">
           <div class="date">{{ comment.created_date }}</div>
           <strong>{{ comment.author }}</strong>

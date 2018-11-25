@@ -31,3 +31,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class Attachment(models.Model):
+    post = models.ForeignKey('blog.Post', on_delete=models.CASCADE)
+    upfiles = models.FileField(upload_to='up_files/%y%m%d', blank=True, null=True)
+
+
+# class UploadFile(models.Model):
+#     title = models.CharField(max_length=200)
+#     files = models.FileField(upload_to='up_files/%y%m%d/', null=True)

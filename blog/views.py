@@ -3,8 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Post, Comment
-from .forms import PostForm, CommentForm
+from .models import Post, Comment, Attachment
+from .forms import PostForm, CommentForm, AttachmentForm
 
 
 def post_list(request):
@@ -29,15 +29,24 @@ def post_detail(request, pk):
 def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST)
+        attached = AttachmentForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            # post.published_date=timezone.now()
             post.save()
-            return redirect('post_detail', pk=post.pk)
+        if attached.is_valid():
+            attachment = attached.save(commit=False)
+            attachment.post = post
+            print("after attached.is_valid", attached.is_valid())
+            print("attachment.upfiles", attachment.upfiles != None)
+            if attachment.upfiles != None:
+                attachment.save()
+                print("attachment save")
+        return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm
-        return render(request, 'blog/post_edit.html', {'form': form})
+        attached = AttachmentForm
+        return render(request, 'blog/post_edit.html', {'form': form, 'attached': attached})
 
 
 @login_required
@@ -84,3 +93,18 @@ def comment_remove(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     comment.delete()
     return redirect('post_detail', pk=comment.post.pk)
+
+
+# def upload_file(request):
+#     if request.method == 'POST':
+#         form = UploadFileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             print("request.FILES", request.FILES)
+#             print("upoad file is : ", form.files)
+#             #print("urls : ", form.files.urls)
+#             #print("file name : ", form.files.name)
+#             return render(request, 'blog/uploaded.html', {'form': form})
+#     else:
+#         form = UploadFileForm()
+#         return render(request, 'blog/upload.html', {'form': form})
